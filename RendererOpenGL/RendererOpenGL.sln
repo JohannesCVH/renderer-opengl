@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "renderer-opengl", "renderer-opengl.csproj", "{A13BC201-68AD-2755-F9AB-4CE4F2D3FF37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RendererOpenGL", "RendererOpenGL.csproj", "{57EF7D69-AE25-0629-B2C0-04588319D0EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,10 +10,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A13BC201-68AD-2755-F9AB-4CE4F2D3FF37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A13BC201-68AD-2755-F9AB-4CE4F2D3FF37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A13BC201-68AD-2755-F9AB-4CE4F2D3FF37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A13BC201-68AD-2755-F9AB-4CE4F2D3FF37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57EF7D69-AE25-0629-B2C0-04588319D0EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57EF7D69-AE25-0629-B2C0-04588319D0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57EF7D69-AE25-0629-B2C0-04588319D0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57EF7D69-AE25-0629-B2C0-04588319D0EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
