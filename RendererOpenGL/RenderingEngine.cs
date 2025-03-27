@@ -5,6 +5,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using static RendererOpenGL.Globals;
 using static RendererOpenGL.Camera;
+using static RendererOpenGL.MathLib;
 
 namespace RendererOpenGL;
 
@@ -46,7 +47,7 @@ public class RenderingEngine : GameWindow
 		ObjReader teapotReader = new ObjReader(filePathTeapot);
 
         Entity MainEntity = new Entity(
-            new Vector3(0.0f, 0.0f, -12.0f),
+            new Vector3(0.0f, 0.0f, 6.0f),
             1.0f,
             0.0f,
             cubeReader.Vertices.ToArray(),
@@ -77,7 +78,7 @@ public class RenderingEngine : GameWindow
     {
         base.OnUpdateFrame(e);
         HandleInput();
-        ENTITIES[0].Rotate();
+        ENTITIES[0].RotateYaw(1);
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -89,14 +90,10 @@ public class RenderingEngine : GameWindow
         //Code goes here.
         for (int i = 0; i < ENTITIES.Count; i++)
         {
-            GL.BindVertexArray(ENTITIES[0].RawModel.VAO);
+            GL.BindVertexArray(ENTITIES[i].RawModel.VAO);
             GL.EnableVertexAttribArray(0);
 
-            var transform = Matrix4.Identity;
-            transform = transform * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(ENTITIES[i].Angle));
-            transform = transform * Matrix4.CreateRotationY(MathHelper.DegreesToRadians(ENTITIES[i].Angle));
-            transform = transform * Matrix4.CreateRotationX(MathHelper.DegreesToRadians(ENTITIES[i].Angle));
-            transform = transform * Matrix4.CreateScale(ENTITIES[i].ScaleFactor);
+            var transform = CreateTransformationMatrix(ENTITIES[i].Position, ENTITIES[i].ScaleFactor, ENTITIES[i].RotX, ENTITIES[i].RotY, ENTITIES[i].RotZ);
             var view = GetViewMatrix();
             var projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(WINDOW_FOV), WINDOW_ASPECT, Z_NEAR, Z_FAR);
 

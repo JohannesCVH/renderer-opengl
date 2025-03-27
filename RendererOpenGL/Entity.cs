@@ -8,15 +8,37 @@ public class Entity : IDisposable
 
 	public float ScaleFactor { get; set; }
 	public float Rotation { get; set; }
-	private float _angle;
-	public float Angle { 
-		get { return _angle; } 
+	private float _rotX;
+	public float RotX { 
+		get { return _rotX; } 
 		set {
-			if (_angle + value >= 360) 
-				_angle = 0 + value;
-			else if (_angle + value < 0) 
-				_angle = 360 + value;
-			else _angle = value;
+			if (_rotX + value >= 360) 
+				_rotX = 0 + value;
+			else if (_rotX + value < 0) 
+				_rotX = 360 + value;
+			else _rotX = value;
+		}
+	}
+	private float _rotY;
+	public float RotY { 
+		get { return _rotY; } 
+		set {
+			if (_rotY + value >= 360) 
+				_rotY = 0 + value;
+			else if (_rotY + value < 0) 
+				_rotY = 360 + value;
+			else _rotY = value;
+		}
+	}
+	private float _rotZ;
+	public float RotZ { 
+		get { return _rotZ; } 
+		set {
+			if (_rotZ + value >= 360) 
+				_rotZ = 0 + value;
+			else if (_rotZ + value < 0) 
+				_rotZ = 360 + value;
+			else _rotZ = value;
 		}
 	}
 	public float[] Vertices { get; set; }
@@ -27,30 +49,26 @@ public class Entity : IDisposable
 	{
 		Position = pos;
 		ScaleFactor = scaleF;
-		Angle = angle;
+		RotX = angle;
 		Vertices = vertices;
 		Faces = faces;
 		RawModel = new RawModel(vertices, faces);
 	}
 
-	public void Rotate(float? angle = null)
+
+	public void RotatePitch(float angle)
 	{   
-		Angle += angle ?? Rotation;
+		RotX += angle;
 	}
 
-	public void RotateRoll(float? angle = null)
+	public void RotateYaw(float angle)
 	{   
-		Angle += angle ?? Rotation;
+		RotY += angle;
 	}
-
-	public void RotateYaw(float? angle = null)
+	
+	public void RotateRoll(float angle)
 	{   
-		Angle += angle ?? Rotation;
-	}
-
-	public void RotatePitch(float? angle = null)
-	{   
-		Angle += angle ?? Rotation;
+		RotZ += angle;
 	}
 
     public void Dispose()
