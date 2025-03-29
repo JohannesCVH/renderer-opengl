@@ -26,44 +26,41 @@ public class RenderingEngine : GameWindow
     {
         base.OnLoad();
 
-        //Load Meshes
-        string filePathTeapot = Path.Combine(
+        //Load Mesh
+		string filePathObj = Path.Combine(
 			Directory.GetCurrentDirectory(),
-			"./Assets/teapot.obj"
+			"./Assets/house.obj"
 		);
 		
-		string filePathShip = Path.Combine(
+		string filePathMtl = Path.Combine(
 			Directory.GetCurrentDirectory(),
-			"./Assets/ship.obj"
+			"./Assets/penguin.mtl"
 		);
 
-		string filePathCube = Path.Combine(
-			Directory.GetCurrentDirectory(),
-			"./Assets/cube.obj"
-		);
-
-		ObjReader cubeReader = new ObjReader(filePathCube);
-		ObjReader shipReader = new ObjReader(filePathShip);
-		ObjReader teapotReader = new ObjReader(filePathTeapot);
-
-        Entity MainEntity = new Entity(
-            new Vector3(0.0f, 0.0f, 6.0f),
+        EntityPhysical MainEntity = new EntityPhysical(
+            new Vector3(0.0f, -1.6f, 8.0f),
             1.0f,
             0.0f,
-            cubeReader.Vertices.ToArray(),
-            cubeReader.Faces.ToArray()
+            filePathObj,
+            // filePathMtl
+            null
         );
-        MainEntity.Rotation = 0.5f;
+        // MainEntity.Rotation = 0.5f;
 
         ENTITIES.Add(MainEntity);
+        
+        LIGHT = new EntityLight(new Vector3(3.0f, 1.0f, 0.0f));
 
         //Shaders
         string vertexShaderPath = Path.Combine(Directory.GetCurrentDirectory(), "Shaders/shader.vert");
         string fragmentShaderPath = Path.Combine(Directory.GetCurrentDirectory(), "Shaders/shader.frag");
         Shader = new Shader(vertexShaderPath, fragmentShaderPath);
+        
+        Shader.SetVector3("lightPos", LIGHT.Position);
 
-        //Clear screen
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        GL.Enable(EnableCap.DepthTest);
+        GL.ClearDepth(1);
     }
 
     protected override void OnFramebufferResize(FramebufferResizeEventArgs e)
@@ -78,33 +75,36 @@ public class RenderingEngine : GameWindow
     {
         base.OnUpdateFrame(e);
         HandleInput();
-        ENTITIES[0].RotateYaw(1);
+        
+        if (ENABLE_ROTATION)
+            ENTITIES[0].RotateYaw(1);
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
-    {
+    {   
         base.OnRenderFrame(e);
 
-        GL.Clear(ClearBufferMask.ColorBufferBit);
+        GL.Clear(ClearBufferMask.ColorBufferBit|ClearBufferMask.DepthBufferBit);
 
         //Code goes here.
         for (int i = 0; i < ENTITIES.Count; i++)
         {
-            GL.BindVertexArray(ENTITIES[i].RawModel.VAO);
+            GL.BindVertexArray(ENTITIES[i].Mesh.VAO);
             GL.EnableVertexAttribArray(0);
+            GL.EnableVertexAttribArray(1);
 
             var transform = CreateTransformationMatrix(ENTITIES[i].Position, ENTITIES[i].ScaleFactor, ENTITIES[i].RotX, ENTITIES[i].RotY, ENTITIES[i].RotZ);
             var view = GetViewMatrix();
             var projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(WINDOW_FOV), WINDOW_ASPECT, Z_NEAR, Z_FAR);
 
-            Shader.Use();
-            Shader.SetMatrix4("model", transform);
+            Shader.SetMatrix4("transform", transform);
             Shader.SetMatrix4("view", view);
             Shader.SetMatrix4("projection", projection);
             
-            GL.DrawElements(PrimitiveType.Triangles, ENTITIES[i].Faces.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, ENTITIES[0].Mesh.VertexCount);
 
             GL.DisableVertexAttribArray(0);
+            GL.DisableVertexAttribArray(1);
             GL.BindVertexArray(0);
         }
 
@@ -131,5 +131,17 @@ public class RenderingEngine : GameWindow
         if (KeyboardState.IsKeyDown(Keys.S)) CAMERA_POS -= CAMERA_DIR * CAMERA_SPEED;
         if (KeyboardState.IsKeyDown(Keys.A)) CAMERA_POS += CAMERA_RIGHT * CAMERA_SPEED;
         if (KeyboardState.IsKeyDown(Keys.D)) CAMERA_POS -= CAMERA_RIGHT * CAMERA_SPEED;
+        
+        if (KeyboardState.IsKeyDown(Keys.Up)) CAMERA_POS += CAMERA_UP * CAMERA_SPEED;
+        if (KeyboardState.IsKeyDown(Keys.Down)) CAMERA_POS -= CAMERA_UP * CAMERA_SPEED;
+        
+        // if (KeyboardState.IsKeyDown(Keys.Left)) CAMERA_YAW += 2.0f;
+        // if (KeyboardState.IsKeyDown(Keys.Right)) CAMERA_YAW -= 2.0f;
+        
+        if (KeyboardState.IsKeyDown(Keys.R) && (DateTime.Now - SETTING_CHANGE_LAST_UPDATED).Milliseconds > 100)
+        {
+            ENABLE_ROTATION = ENABLE_ROTATION == false ? true : false;
+            SETTING_CHANGE_LAST_UPDATED = DateTime.Now;
+        }
     }
 }

@@ -1,8 +1,17 @@
 #version 330 core
 
-out vec4 FragColor;
+in vec3 fragNormal;
+in vec3 lightDir;
+
+out vec4 color;
 
 void main()
 {
-    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    vec3 normalU = normalize(fragNormal);
+    vec3 lightDirU = normalize(lightDir);
+
+    float surNormToLightDot = dot(normalU, lightDirU);
+    float diffuse = max(surNormToLightDot, 0.1f);
+    
+    color = vec4(diffuse * vec3(0.6f, 0.6f, 0.6f), 1.0f);
 }

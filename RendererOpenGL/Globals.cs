@@ -15,5 +15,6 @@ internal static class Globals
 	public static bool ENABLE_ROTATION = false;
 	public static DateTime SETTING_CHANGE_LAST_UPDATED = DateTime.Now;
 
-    public static List<Entity> ENTITIES = new List<Entity>();
+    public static List<EntityPhysical> ENTITIES = new List<EntityPhysical>();
+    public static EntityLight LIGHT;
 }

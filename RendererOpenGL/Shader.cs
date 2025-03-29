@@ -46,6 +46,7 @@ public class Shader : IDisposable
         GL.AttachShader(ShaderHandle, FragmentShader);
 
         GL.LinkProgram(ShaderHandle);
+        GL.ValidateProgram(ShaderHandle);
 
         GL.GetProgram(ShaderHandle, GetProgramParameterName.LinkStatus, out success);
         if (success == 0)
@@ -62,7 +63,7 @@ public class Shader : IDisposable
         GL.GetProgram(ShaderHandle, GetProgramParameterName.ActiveUniforms, out var uniformCount);
 
         UniformLocations = new Dictionary<string, int>();
-
+        
         for (var i = 0; i < uniformCount; i++)
         {
             //Get uniform name
@@ -82,6 +83,12 @@ public class Shader : IDisposable
     {
         GL.UseProgram(ShaderHandle);
         GL.UniformMatrix4(UniformLocations[name], true, ref data);
+    }
+    
+    public void SetVector3(string name, Vector3 val)
+    {
+        GL.UseProgram(ShaderHandle);
+        GL.Uniform3(UniformLocations[name], val);
     }
 
     private bool DisposedValue = false;

@@ -1,11 +1,21 @@
 #version 330 core
-layout (location = 0) in vec3 aPosition;
 
-uniform mat4 model;
+in vec3 position;
+in vec3 vertNormal;
+
+uniform mat4 transform;
 uniform mat4 view;
 uniform mat4 projection;
+uniform vec3 lightPos;
+
+out vec3 fragNormal;
+out vec3 lightDir;
 
 void main()
 {
-    gl_Position = vec4(aPosition, 1.0) * model * view * projection;
+    vec3 worldPos = (vec4(position, 1.0) * transform).xyz;
+    gl_Position = vec4(worldPos, 1.0) * view * projection;
+
+    fragNormal = (transform * vec4(vertNormal, 0.0f)).xyz;
+    lightDir = lightPos - worldPos;
 }
